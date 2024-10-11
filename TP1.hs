@@ -1,7 +1,6 @@
 import qualified Data.List
 import qualified Data.Array
 import qualified Data.Bits
-import qualified Data.Maybe -- TODO _ASK TEACHER_ IF CAN BE IMPORTED
 -- PFL 2024/2025 Practical assignment 1
 
 -- _ASK TEACHER_ Talk to the goat to clear some doubts
@@ -16,20 +15,21 @@ cities :: RoadMap -> [City]
 cities graph = Data.List.nub (concat [[city1,city2] | (city1,city2,_)<-graph])
 
 areAdjacent :: RoadMap -> City -> City -> Bool
-areAdjacent graph city1 city2 =  not (null [ True |(city1',city2',_)<-graph, (city1' == city1 && city2' == city2) || (city1' == city2 && city2' == city1)] )
+areAdjacent graph city1 city2 =  any (\(city1', city2', _) -> (city1' == city1 && city2' == city2) || (city1' == city2 && city2' == city1)) graph
 
 distance :: RoadMap -> City -> City -> Maybe Distance
-distance graph city1 city2 = Data.Maybe.listToMaybe edges
+distance graph city1 city2 | edges == [] = Nothing
+                           | otherwise = Just (head edges) 
                             where edges = [ distance |(city1',city2',distance)<-graph, (city1' == city1 && city2' == city2) || (city1' == city2 && city2' == city1)]
 
 adjacent :: RoadMap -> City -> [(City,Distance)]
 adjacent graph city = [if city == city1 then (city2,distance) else (city1,distance) |(city1,city2,distance)<-graph, city == city1 || city == city2 ] 
 
 pathDistance :: RoadMap -> Path -> Maybe Distance
-pathDistance graph path = if all (==True) [areAdjacent graph (path !! index) (path !! (index + 1)) | index<-[0..length path - 2]] then fmap sum $ sequence [ distance graph (path !! index) (path !! (index + 1))| index<-[0..length path - 2]] else Nothing
+pathDistance graph path = if any (==False) [areAdjacent graph (path !! index) (path !! (index + 1)) | index<-[0..length path - 2]] then Nothing else fmap sum $ sequence [ distance graph (path !! index) (path !! (index + 1))| index<-[0..length path - 2]]
   
 rome :: RoadMap -> [City]
-rome graph = [city | (city,nAdj)<- city_adj, nAdj == maxAdj]
+rome graph = [city | (city,nAdj)<- city_adj, nAdj == maxAdj] 
             where city_adj = [(city, length (adjacent graph city))| city <-cities graph]
                   maxAdj = maximum (map snd city_adj)
 
@@ -37,6 +37,7 @@ rome graph = [city | (city,nAdj)<- city_adj, nAdj == maxAdj]
 neighbors :: RoadMap -> City -> [City]
 neighbors graph node = [city |(city,_)<-(adjacent graph node)]
 
+dfs :: RoadMap -> City -> [City] -> [City]
 dfs graph node visited | node `elem` visited = visited -- If the city as already been visited return the visited nodes
                        | otherwise = foldl (\acc adj -> dfs graph adj acc) (node : visited) (neighbors graph node) -- here we traverse the adj nodes while storing them recursively in the acc
 
