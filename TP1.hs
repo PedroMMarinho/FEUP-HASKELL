@@ -27,12 +27,14 @@ adjacent graph city = [if city == city1 then (city2,distance) else (city1,distan
 
 pathDistance :: RoadMap -> Path -> Maybe Distance
 pathDistance graph path = if all (==True) [areAdjacent graph (path !! index) (path !! (index + 1)) | index<-[0..length path - 2]] then fmap sum $ sequence [ distance graph (path !! index) (path !! (index + 1))| index<-[0..length path - 2]] else Nothing
-
+  
 rome :: RoadMap -> [City]
-rome = undefined
+rome graph = [city | (city,nAdj)<- city_adj, nAdj == maxAdj]
+            where city_adj = [(city, length (adjacent graph city))| city <-cities graph]
+                  maxAdj = maximum (map snd city_adj)
 
 isStronglyConnected :: RoadMap -> Bool
-isStronglyConnected = undefined
+isStronglyConnected  = undefined
 
 shortestPath :: RoadMap -> City -> City -> [Path]
 shortestPath = undefined
