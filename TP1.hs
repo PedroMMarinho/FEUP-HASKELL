@@ -11,6 +11,21 @@ type Distance = Int
 
 type RoadMap = [(City,City,Distance)]
 
+
+convertToAdjList :: RoadMap -> [(City, [(City, Distance)])]
+convertToAdjList graph = [(vertex,[ adj | adj<-adjacent graph vertex])| vertex<-cities graph]
+{-
+Not working _ASK TEACHER_ why I rage quit after this one
+
+convertToAdjMatrix :: RoadMap -> Data.Array.Array (City, City) (Maybe Distance)
+convertToAdjMatrix graph = Data.Array.array bounds [((c1,c2), distance graph c1 c2) | c1<-vertices,c2<-vertices]
+                        where vertices = cities graph
+                              firstCity = minimum vertices
+                              lastCity = maximum vertices
+                              bounds = ((firstCity,firstCity),(lastCity,lastCity))
+
+-}
+
 cities :: RoadMap -> [City]
 cities graph = Data.List.nub (concat [[city1,city2] | (city1,city2,_)<-graph])
 
