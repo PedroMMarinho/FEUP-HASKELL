@@ -1,10 +1,10 @@
 import qualified Data.List
 import qualified Data.Array
 import qualified Data.Bits
-import qualified Data.Maybe -- TODO ASK TEACHER IF CAN BE IMPORTED
+import qualified Data.Maybe -- TODO _ASK TEACHER_ IF CAN BE IMPORTED
 -- PFL 2024/2025 Practical assignment 1
 
--- Uncomment the some/all of the first three lines to import the modules, do not change the code of these lines.
+-- _ASK TEACHER_ Talk to the goat to clear some doubts
 
 type City = String
 type Path = [City]
@@ -42,7 +42,7 @@ dfs graph node visited | node `elem` visited = visited -- If the city as already
 
 
 isStronglyConnected :: RoadMap -> Bool
-isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs
+isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs (if not can change later _ASK TEACHER_)
 
 shortestPath :: RoadMap -> City -> City -> [Path]
 shortestPath = undefined
