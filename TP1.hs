@@ -11,12 +11,17 @@ type Distance = Int
 
 type RoadMap = [(City,City,Distance)]
 
+type AdjList = [(City,[(City,Distance)])]
 
-convertToAdjList :: RoadMap -> [(City, [(City, Distance)])]
+type AdjMatrix = Data.Array.Array (Int,Int) (Maybe Distance)
+
+data AdjPointers = Place City [(RoadMap, Distance)] -- Probably not gonna be used (pointer)
+
+convertToAdjList :: RoadMap -> AdjList
 convertToAdjList graph = [(vertex,[ adj | adj<-adjacent graph vertex])| vertex<-cities graph]
 
 
-convertToAdjMatrix :: RoadMap -> Data.Array.Array (Int, Int) (Maybe Distance)
+convertToAdjMatrix :: RoadMap -> AdjMatrix
 convertToAdjMatrix graph = Data.Array.array bounds ([((c1,c2), distance graph (show c1) (show c2)) | c1<-[0..length vertices -1],c2<-[0..length vertices -1]])
                         where vertices = Data.List.sort (cities graph)
                               bounds = ((0,0),(length vertices -1,length vertices -1))
