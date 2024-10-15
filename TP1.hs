@@ -14,17 +14,13 @@ type RoadMap = [(City,City,Distance)]
 
 convertToAdjList :: RoadMap -> [(City, [(City, Distance)])]
 convertToAdjList graph = [(vertex,[ adj | adj<-adjacent graph vertex])| vertex<-cities graph]
-{-
-Not working _ASK TEACHER_ why I rage quit after this one
 
-convertToAdjMatrix :: RoadMap -> Data.Array.Array (City, City) (Maybe Distance)
-convertToAdjMatrix graph = Data.Array.array bounds [((c1,c2), distance graph c1 c2) | c1<-vertices,c2<-vertices]
-                        where vertices = cities graph
-                              firstCity = minimum vertices
-                              lastCity = maximum vertices
-                              bounds = ((firstCity,firstCity),(lastCity,lastCity))
 
--}
+convertToAdjMatrix :: RoadMap -> Data.Array.Array (Int, Int) (Maybe Distance)
+convertToAdjMatrix graph = Data.Array.array bounds ([((c1,c2), distance graph (show c1) (show c2)) | c1<-[0..length vertices -1],c2<-[0..length vertices -1]])
+                        where vertices = Data.List.sort (cities graph)
+                              bounds = ((0,0),(length vertices -1,length vertices -1))
+
 
 cities :: RoadMap -> [City]
 cities graph = Data.List.nub (concat [[city1,city2] | (city1,city2,_)<-graph])
@@ -58,12 +54,12 @@ dfs graph node visited | node `elem` visited = visited -- If the city as already
 
 
 isStronglyConnected :: RoadMap -> Bool
-isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs (if not can change later _ASK TEACHER_)
+isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs (if not can change later )
 
-shortestPath :: RoadMap -> City -> City -> [Path]
+shortestPath :: RoadMap -> City -> City -> [Path] -- Utilizar dikstra
 shortestPath = undefined
 
-travelSales :: RoadMap -> Path
+travelSales :: RoadMap -> Path -- fazer a solução das matrizes
 travelSales = undefined
 
 tspBruteForce :: RoadMap -> Path
