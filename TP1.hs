@@ -152,6 +152,7 @@ dfs graph node visited | node `elem` visited = visited -- If the city as already
 isStronglyConnected :: RoadMap -> Bool
 isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs (if not can change later )
 
+-- | PriorityQueue type representing a priorityQueue, where each city is linked with a distance.
 type PriorityQueue = [(City,Distance)]
 
 -- | Function: getMinPrioQueue
@@ -164,15 +165,40 @@ type PriorityQueue = [(City,Distance)]
 getMinPrioQueue :: PriorityQueue -> (City, Distance)
 getMinPrioQueue (x:xs) = foldl (\acc@(city1, dist1) (city2, dist2) -> if dist2 < dist1 then (city2, dist2) else acc) x xs
 
--- | Function: getMinPrioQueue
--- | Goal: Retrieves the city with the minimum distance from the priority queue.
+-- | Function: popMinPriorityQueue
+-- | Goal: Removes the city with the minimum distance from the priority queue.
 -- | Arguments:
 -- |    prioQueue: A PriorityQueue, which is a list of tuples containing a city and its distance.
--- | Returns: A tuple (City, Distance) representing the city with the smallest distance in the priority queue.
+-- |    min: A tuple (City, Distance) representing the city with the minimum distance to be removed.
+-- | Returns: A PriorityQueue with the minimum city removed.
 -- | Time Complexity: O(n), where n is the number of elements in the priority queue.
 
 popMinPriorityQueue :: PriorityQueue ->  (City, Distance) -> PriorityQueue
 popMinPriorityQueue prioQueue min = filter (\(city, _) -> city /= fst min) prioQueue
+
+-- | Function: insertIntoPriorityQueue
+-- | Goal: Inserts a city and its distance into the priority queue.
+-- | Arguments:
+-- |    (city, distance): A tuple where 'city' is the name of the city, and 'distance' is its distance from the source city.
+-- |    prioQueue: A PriorityQueue, which is a list of tuples containing cities and their associated distances.
+-- | Returns: A new priority queue with the city and its distance added at the front.
+-- | Time Complexity: O(1), since the element is added to the front of the list without sorting.
+
+insertIntoPriorityQueue :: (City, Distance) -> PriorityQueue -> PriorityQueue
+insertIntoPriorityQueue (city, distance) prioQueue = (city, distance) : prioQueue  -- Add new city with its distance to the priority queue
+
+-- | Function: lookupDistance
+-- | Goal: Retrieves the distance of a specific city from a list of distances.
+-- | Arguments:
+-- |    city: The name of the city whose distance is being looked up.
+-- |    distances: A list of tuples where each tuple contains a city and its associated distance.
+-- | Returns: The distance of the city if it exists in the list; otherwise, returns error.
+-- | Time Complexity: O(n), where n is the number of cities in the distances list.
+
+lookupDistance :: City -> [(City, Distance)] -> Distance
+lookupDistance city distances = case lookup city distances of
+                    Just distance -> distance
+                    Nothing -> error ("City " ++ city ++" is missing from the distanceList")  -- city not found (this case should never happen)
 
 
 -- | Function: nodesNotVisited
@@ -190,6 +216,17 @@ nodesNotVisited adjList minCity visited =
         Just neighbors -> 
             filter (\(city, _) -> city `notElem` visited) neighbors  -- Keep only unvisited neighbors
         Nothing -> []  -- Return empty list if node has no edges
+
+-- | Function: removeFromPriorityQueue
+-- | Goal: Removes a specified city from the priority queue.
+-- | Arguments:
+-- |    city: The city to be removed from the priority queue.
+-- |    prioQueue: A PriorityQueue, which is a list of tuples containing a city and its distance.
+-- | Returns: A new priority queue with the specified city removed.
+-- | Time Complexity: O(n), where n is the number of elements in the priority queue.
+
+removeFromPriorityQueue :: City -> PriorityQueue -> PriorityQueue
+removeFromPriorityQueue city prioQueue = filter (\(c, _) -> c /= city) prioQueue
 
 -- | Function: dijkstra
 -- | Goal: Implements Dijkstra's algorithm to find the shortest path from the source to all other cities in the graph.
@@ -216,17 +253,18 @@ dijkstra adjList visited predecessors initialDistances initialPrioQueue
         (newDistances, newPredecessors, updatedPrioQueue) = foldl updateDistances (initialDistances, predecessors, newPrioQueue) unvisitedNodes
             where
                 updateDistances (distances, preds, prioQueue) (neighborCity, weight) =
-                    let currentDistance = lookupDistance (fst min) distances  -- Distance to the current node
+                    let currentDistance = snd min  -- Distance to the current node
                         newDistance = currentDistance + weight  -- New distance through the current node
                         existingDistance = lookupDistance neighborCity distances  -- Existing distance to the neighbor
-                        existingPreds = snd (head $ filter ((== neighborCity) . fst) preds)  -- Get existing predecessors for the neighbor
+                        existingPreds = snd (head $ filter ((== neighborCity) . fst) preds)   -- Get existing predecessors for the neighbor                                  
                     in  
                        case compare newDistance existingDistance of
                         LT ->  -- If the new distance is less
                             let updatedDistances = (neighborCity, newDistance) : filter ((/= neighborCity) . fst) distances
                                 updatedPreds = (neighborCity, [fst min]) : filter ((/= neighborCity) . fst) preds  -- Replace the predecessors list
+                                updatedPrioQueue = insertIntoPriorityQueue (neighborCity, newDistance) (removeFromPriorityQueue neighborCity prioQueue)
                             in 
-                               (updatedDistances, updatedPreds, insertIntoPriorityQueue (neighborCity, newDistance) prioQueue)  -- Add to priority queue
+                               (updatedDistances, updatedPreds, updatedPrioQueue)  -- Add to priority queue
                         EQ ->  -- If the distances are equal
                                    if fst min `notElem` existingPreds  -- Check if the current city is already a predecessor
                                         then
@@ -243,16 +281,8 @@ dijkstra adjList visited predecessors initialDistances initialPrioQueue
                                     updatedPreds = preds ++ [(neighborCity, [fst min])]  -- Add current node to predecessors
                                 in 
                                    (updatedDistances, updatedPreds, insertIntoPriorityQueue (neighborCity, newDistance) prioQueue)  -- Add to priority queue
-                            else 
-                                
+                            else             
                                 (distances, preds, prioQueue)  -- No updates needed
-
-                lookupDistance city distances = case lookup city distances of
-                    Just distance -> distance
-                    Nothing -> 100000000  -- Return "infinity" if city not found
-
-                -- Function to insert the city with its distance into the priority queue
-                insertIntoPriorityQueue (city, distance) prioQueue = (city, distance) : prioQueue  -- Add new city with its distance to the priority queue
 
 
 -- | Function: lookupPredecessors
