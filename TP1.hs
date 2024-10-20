@@ -334,7 +334,7 @@ shortestPath graph start end | start == end = [[start]]
                                     visited = []
                                     aux = dijkstra adjList visited predecessors initialDistances initialPrio
                                     
-{--type Bit = Integer
+type Bit = Integer
 
 allVisited :: Int -> Bit
 allVisited n = (Data.Bits.shiftL 1 n) - 1 -- n being the number of cities
@@ -347,22 +347,32 @@ updateMask :: Bit -> Int -> Bit
 updateMask mask city = mask Data.Bits..|. (Data.Bits.shiftL 1 city)
 
 -- Function to handle Traveling Salesman Problem
-auxTravelSales :: AdjMatrix -> Bit -> Int -> Bit -> Path -> Path
-auxTravelSales adjMatrix mask pos visitAll  path  | mask == visitAll = reverse (show pos : path)
-                                                          | otherwise = []
+auxTravelSales :: AdjMatrix -> Bit -> Int -> Bit -> Path -> (Distance, Path)
+auxTravelSales adjMatrix mask pos visitAll path
+    |  mask == visitAll = 
+        case adjMatrix Data.Array.! (pos, 0) of 
+            Just dist -> (dist, reverse (show pos : path)) -- Return distance and complete path
+            Nothing ->  (100000000, []) -- No valid path
+    | otherwise = 
+        let ((_, _), (maxRow, _)) = Data.Array.bounds adjMatrix
+            distances = [ (dist + newDist, newPath)
+                        | city <- [0..maxRow], not (isCityVisited mask city),
+                          let dist = case adjMatrix Data.Array.! (pos, city) of
+                                        Just d -> d
+                                        Nothing -> 100000000,  -- Use large value for "infinity"
+                          let (newDist, newPath) = auxTravelSales adjMatrix (mask Data.Bits..|. (Data.Bits.shiftL 1 city)) city visitAll (show pos : path)
+                        ]
+            (minDist, minPath) = minimum distances -- Get minimum distance and corresponding path
+        in  (minDist, minPath)
                                                             
 travelSales :: RoadMap ->  Path -- fazer a solução das matrizes
 travelSales graph | not(isStronglyConnected graph)  = [] -- If the graph is not connected, return an empty path
-                  | otherwise = auxTravelSales adjMatrix initialMask 0 visited [] -- start at node 0
+                  | otherwise = snd (auxTravelSales adjMatrix initialMask 0 visited []) ++ ["0"] -- start at node 0
                     where adjMatrix = convertToAdjMatrix graph 
-                          initialMask = Data.Bits.bit 0
+                          initialMask = Data.Bits.bit 0 -- initial mask is 1 
                           uniqueCities = length (cities graph)
                           visited = allVisited uniqueCities                                                            
---}
                                                                 
-travelSales :: RoadMap ->  Path -- fazer a solução das matrizes
-travelSales = undefined
-
                           
 tspBruteForce :: RoadMap -> Path
 tspBruteForce = undefined -- only for groups of 3 people; groups of 2 people: do not edit this function
@@ -404,3 +414,5 @@ gTest8 = [("0", "1", 6), ("0", "2", 6), ("0", "3", 46), ("0", "4", 31), ("0", "5
 gTest9 :: RoadMap
 gTest9 = [("0","1",4),("0","2",1),("2","3",1), ("3","4",1), ("4", "1", 1), ("0","5",2),("5","1",2)]
 
+gTest10 :: RoadMap
+gTest10 = [("0","1",8), ("0","2",82), ("0","3",273), ("0","4",87), ("0","5",80), ("0","6",237), ("0","7",75), ("0","8",230), ("0","9",72), ("1","2",175), ("1","3",218), ("1","4",199), ("1","5",156), ("1","6",123), ("1","7",103), ("1","8",278), ("1","9",14), ("2","3",109), ("2","4",294), ("2","5",200), ("2","6",143), ("2","7",157), ("2","8",46), ("2","9",141), ("3","4",211), ("3","5",84), ("3","6",259), ("3","7",109), ("3","8",171), ("3","9",119), ("4","5",138), ("4","6",101), ("4","7",53), ("4","8",112), ("4","9",194), ("5","6",123), ("5","7",132), ("5","8",171), ("5","9",48), ("6","7",130), ("6","8",40), ("6","9",129), ("7","8",191), ("7","9",58), ("8","9",158)]
