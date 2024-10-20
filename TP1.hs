@@ -334,10 +334,36 @@ shortestPath graph start end | start == end = [[start]]
                                     visited = []
                                     aux = dijkstra adjList visited predecessors initialDistances initialPrio
                                     
+{--type Bit = Integer
 
-travelSales :: RoadMap -> Path -- fazer a solução das matrizes
+allVisited :: Int -> Bit
+allVisited n = (Data.Bits.shiftL 1 n) - 1 -- n being the number of cities
+
+-- Function to check if a city has been visited
+isCityVisited :: Bit -> Int -> Bool
+isCityVisited mask city = (mask Data.Bits..&. ( Data.Bits.shiftL 1 city)) /= 0
+
+updateMask :: Bit -> Int -> Bit
+updateMask mask city = mask Data.Bits..|. (Data.Bits.shiftL 1 city)
+
+-- Function to handle Traveling Salesman Problem
+auxTravelSales :: AdjMatrix -> Bit -> Int -> Bit -> Path -> Path
+auxTravelSales adjMatrix mask pos visitAll  path  | mask == visitAll = reverse (show pos : path)
+                                                          | otherwise = []
+                                                            
+travelSales :: RoadMap ->  Path -- fazer a solução das matrizes
+travelSales graph | not(isStronglyConnected graph)  = [] -- If the graph is not connected, return an empty path
+                  | otherwise = auxTravelSales adjMatrix initialMask 0 visited [] -- start at node 0
+                    where adjMatrix = convertToAdjMatrix graph 
+                          initialMask = Data.Bits.bit 0
+                          uniqueCities = length (cities graph)
+                          visited = allVisited uniqueCities                                                            
+--}
+                                                                
+travelSales :: RoadMap ->  Path -- fazer a solução das matrizes
 travelSales = undefined
 
+                          
 tspBruteForce :: RoadMap -> Path
 tspBruteForce = undefined -- only for groups of 3 people; groups of 2 people: do not edit this function
 
