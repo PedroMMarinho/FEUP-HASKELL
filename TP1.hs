@@ -333,45 +333,86 @@ shortestPath graph start end | start == end = [[start]]
                                     predecessors = [(start,[])]
                                     visited = []
                                     aux = dijkstra adjList visited predecessors initialDistances initialPrio
-                                    
+
+
+-- | Bit type representing a variable size bit with "infinite" size. It stores an Integer with the porpuse of being a bit.
 type Bit = Integer
 
+-- | Function: allVisited
+-- | Goal: Creates a bit mask where all bits up to the n-th position are set to 1, representing all cities as visited.
+-- | Arguments:
+-- |    n: The number of cities to be visited.
+-- | Returns: A bit mask of type `Bit` (Integer), where the first 'n' bits are set to 1.
+-- | Time Complexity: O(1), as it performs a constant number of bitwise operations.
 allVisited :: Int -> Bit
 allVisited n = (Data.Bits.shiftL 1 n) - 1 -- n being the number of cities
 
--- Function to check if a city has been visited
+-- | Function: isCityVisited
+-- | Goal: Checks if a specific city has been visited by examining the bit mask.
+-- | Arguments:
+-- |    mask: A bit mask of type `Bit` (Integer), representing the visited cities.
+-- |    city: The city to check (an Int representing its index).
+-- | Returns: A boolean value 'True' if the bit corresponding to the city is set (visited), and 'False' otherwise.
+-- | Time Complexity: O(1), as it involves a single bitwise AND operation and comparison.isCityVisited :: Bit -> Int -> Bool
+
 isCityVisited :: Bit -> Int -> Bool
 isCityVisited mask city = (mask Data.Bits..&. ( Data.Bits.shiftL 1 city)) /= 0
+
+
+-- | Function: updateMask
+-- | Goal: Marks a specific city as visited by updating the bit mask.
+-- | Arguments:
+-- |    mask: A bit mask of type `Bit` (Integer), representing the visited cities.
+-- |    city: The city to mark as visited (an Int representing its index).
+-- | Returns: A new bit mask with the bit corresponding to the city set to 1 (visited).
+-- | Time Complexity: O(1), as it involves a single bitwise OR operation.
 
 updateMask :: Bit -> Int -> Bit
 updateMask mask city = mask Data.Bits..|. (Data.Bits.shiftL 1 city)
 
--- Function to handle Traveling Salesman Problem
+-- | Function: auxTravelSales
+-- | Goal: Recursively solves the Traveling Salesman Problem (TSP) using dynamic programming and bit masking.
+-- | Arguments:
+-- |    adjMatrix: An adjacency matrix representing the distances between cities.
+-- |    mask: A bit mask indicating which cities have been visited.
+-- |    pos: The current city's index.
+-- |    visitAll: A bit mask indicating all cities have been visited.
+-- |    path: The current path taken so far (a list of city indices as strings).
+-- | Returns: A tuple containing the minimum distance and the corresponding path taken to visit all cities.
+-- | Time Complexity: O(n^2 * 2^n), where n is the number of cities. This is because the function explores all subsets of cities (2^n) and computes distances for each subset and city pair (n^2).
+
 auxTravelSales :: AdjMatrix -> Bit -> Int -> Bit -> Path -> (Distance, Path)
-auxTravelSales adjMatrix mask pos visitAll path
-    |  mask == visitAll = 
+auxTravelSales adjMatrix currentMask pos visitAll path
+    |  currentMask == visitAll = 
         case adjMatrix Data.Array.! (pos, 0) of 
             Just dist -> (dist, reverse (show pos : path)) -- Return distance and complete path
             Nothing ->  (100000000, []) -- No valid path
     | otherwise = 
-        let ((_, _), (maxRow, _)) = Data.Array.bounds adjMatrix
-            distances = [ (dist + newDist, newPath)
-                        | city <- [0..maxRow], not (isCityVisited mask city),
+        let ((_, _), (maxRow, _)) = Data.Array.bounds adjMatrix -- get Matrix maxIndex
+            distancePaths = [ (dist + newDist, newPath)
+                        | city <- [0..maxRow], not (isCityVisited currentMask city),
                           let dist = case adjMatrix Data.Array.! (pos, city) of
                                         Just d -> d
-                                        Nothing -> 100000000,  -- Use large value for "infinity"
-                          let (newDist, newPath) = auxTravelSales adjMatrix (mask Data.Bits..|. (Data.Bits.shiftL 1 city)) city visitAll (show pos : path)
-                        ]
-            (minDist, minPath) = minimum distances -- Get minimum distance and corresponding path
-        in  (minDist, minPath)
-                                                            
-travelSales :: RoadMap ->  Path -- fazer a solução das matrizes
+                                        Nothing -> 100000000,  -- Use large value for "infinity" meaning invalid path
+                          let (newDist, newPath) = auxTravelSales adjMatrix (updateMask currentMask city) city visitAll (show pos : path)] -- create paths with their respective distance
+            (minDist, minPath) = minimum distancePaths -- Get minimum distance and corresponding path
+        in  (minDist, minPath) -- return the minimum cost path 
+
+-- | Function: travelSales
+-- | Goal: Solves the Traveling Salesman Problem (TSP) by finding the shortest path that visits all cities exactly once and returns to the start.
+-- | Arguments:
+-- |    graph: A RoadMap (list of tuples representing roads between cities with distances).
+-- | Returns: The shortest path (a list of city indices as strings) that visits all cities and returns to the start, or an empty list if the graph is not strongly connected.
+-- | Time Complexity: O(n^2 * 2^n), where n is the number of cities, as it uses dynamic programming with bit masking to explore all subsets of cities.
+
+travelSales :: RoadMap ->  Path -- Matrix Bitwise solution
 travelSales graph | not(isStronglyConnected graph)  = [] -- If the graph is not connected, return an empty path
-                  | otherwise = snd (auxTravelSales adjMatrix initialMask 0 visited []) ++ ["0"] -- start at node 0
+                  | otherwise = snd (auxTravelSales adjMatrix initialMask initialPos visited []) ++ ["0"] -- start at node 0
                     where adjMatrix = convertToAdjMatrix graph 
-                          initialMask = Data.Bits.bit 0 -- initial mask is 1 
+                          initialMask = Data.Bits.bit 0 -- initial mask is 1 meaning we visit the first city
                           uniqueCities = length (cities graph)
-                          visited = allVisited uniqueCities                                                            
+                          visited = allVisited uniqueCities
+                          initialPos = 0                                                            
                                                                 
                           
 tspBruteForce :: RoadMap -> Path
