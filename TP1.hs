@@ -1,7 +1,6 @@
 import qualified Data.List
 import qualified Data.Array
 import qualified Data.Bits
-import Debug.Trace (trace) -- retirar no final (bom para debug)
 -- PFL 2024/2025 Practical assignment 1
 
 -- | Type alias for City, representing a city's name as a string.
@@ -150,7 +149,8 @@ dfs graph node visited | node `elem` visited = visited -- If the city as already
 -- | Time Complexity: O(V + E), where V is the number of cities and E is the number of roads.
 
 isStronglyConnected :: RoadMap -> Bool
-isStronglyConnected  graph = length (cities graph) == length (dfs graph "0" []) -- Here im assuming "0" is in all graphs (if not can change later )
+isStronglyConnected  graph = length (cities graph) == length (dfs graph randomCity []) -- start from a random City
+                            where (randomCity,_,_) = graph !! 0
 
 -- | PriorityQueue type representing a priorityQueue, where each city is linked with a distance.
 type PriorityQueue = [(City,Distance)]
@@ -326,7 +326,7 @@ collectAllPaths predecessorsList targetCity currPath
 shortestPath :: RoadMap -> City -> City -> [Path] -- Utilizes dikstra
 shortestPath graph start end | start == end = [[start]]
                              | not(end `elem` dfs graph start []) = [[]]
-                             | otherwise = collectAllPaths (Debug.Trace.trace ("Auxiliary result from Dijkstra: " ++ show aux) aux) end [end]
+                             | otherwise = collectAllPaths aux end [end]
                               where adjList = convertToAdjList graph
                                     initialPrio = [(start,0)]
                                     initialDistances = foldl (\acc city -> (if city == start then (city,0) else (city,100000000)) : acc) [] (cities graph)
