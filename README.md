@@ -20,7 +20,7 @@ header-includes:
 
 ## PARTICIPATION
 
-- Each one of us did **50%** of the work asked. The two most difficult algorithms were made by each student and the rest of the functions were divided accordingly.
+- Each one of us did **50%** of the asked work. The two most difficult algorithms were made by each student and the rest of the functions were divided accordingly.
 
 ## SHORTEST PATH
 
@@ -55,9 +55,12 @@ existingDistance = lookupDistance neighborCity distances  -- Existing distance t
 existingPreds = snd (head $ filter ((== neighborCity) . fst) preds)   -- Get existing predecessors for the neighbor                                  
 \end{lstlisting}
 
-By comparing the `newDistance` of the city we are processing with the `existingDistance` from the distances list. 
+By comparing the `newDistance` of the city we are processing with the `existingDistance` from the distances list.
+
 - If the `newDistance < existingDistance` we update the distancesList, store the newBestPredecessorPath to the predecessors list and "decrease the key", replacing from the prioqueue the old (neighboorCity,distance) with (neighboorCity,newDistance) to the priorityQueue.
+
 - If the `newDistance == existingDistance`, meaning there is another path that can have the least cost, we add it to predsList replacing or creating a predecessor, if needed.
+
 - If the  `newDistance > existingDistance` and `existingDistance == INFINITY`,with `INFINITY = 100000000`, we yet again update the distanceList with the neigboorCity and its newDistance, add a new predecessor and insert the new (city,dist) into the priority queue.
 
 After processing `shortestPath gTest5 "1" "3"`  we will get something like this from the dijkstra function: `[("3",["4","2"]),("4",["1"]),("2",["1"]),("1",[])]`
@@ -66,9 +69,9 @@ Now we only have to build the path. To do that we use `collectAllPaths` and recu
 \begin{lstlisting}
 endNode = "3"
 startingPath = ["3"]
-firstRecursiveCall:  startingPath ++ ["4"]  ------/////------ startingPath ++ ["2"]
-secondRecursiveCall: startingPath ++ ["4"] ++ ["1"] ------/////------ startingPath ++ ["2"] ++ ["1"]
-thirdRecursiveCall :  startingPath ++ ["4"] ++ ["1"] ++ [] ------/////------ startingPath ++ ["2"] ++ ["1"] ++ [] (stop at empty list)
+firstRecursiveCall:  startingPath ++ ["4"]  // startingPath ++ ["2"]
+secondRecursiveCall: startingPath ++ ["4"] ++ ["1"] // startingPath ++ ["2"] ++ ["1"]
+thirdRecursiveCall :  startingPath ++ ["4"] ++ ["1"] ++ [] // startingPath ++ ["2"] ++ ["1"] ++ [] (stop at empty list)
 callBack: We retrieve them in reverse order
 \end{lstlisting}
 
