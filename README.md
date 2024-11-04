@@ -36,7 +36,7 @@ predecessors = [(start,[])] -- keep track of the optimal paths
 visited = [] -- keep track of visited nodes
 \end{lstlisting}
 
-Going inside `dijkstra` function we can see that, when we empty our priorityQueue the function ends and returns each node precedessors, so we can later on build the paths. Otherwise, we still have to process all of them. Having this in mind, our loop keeps on extracting the city with the minimal distance from the priorityQueue, adds the city to the visited list and iterates trough all unvisited adjacent nodes.
+Going inside `dijkstra` function we can see that, when we empty our priorityQueue the function ends and returns each node predecessors, so we can later on build the paths. Otherwise, we still have to process all of them. Having this in mind, our loop keeps on extracting the city with the minimal distance from the priorityQueue, adds the city to the visited list and iterates trough all unvisited adjacent nodes.
 
 \begin{lstlisting}[language=Haskell]
 min = getMinPrioQueue initialPrioQueue  -- Get the city with the minimum distance (City,Distance)
