@@ -1,5 +1,5 @@
 # FEUP-PFL 2024/2025
-Final project in Haskell for the PFL curricular unit.
+Projects in Haskell and Prolog for the PFL curricular unit.
 ## Project Infos
 - Date: 3rd Year, 1st Semester
 - Course: Programação Funcional e em Lógica | Functional and Logic Programming
