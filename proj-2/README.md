@@ -259,5 +259,7 @@ The game features a modular menu system with file-based displays and supports va
 ## Bibliography 
 
 [Efficient Programs HTML](https://sicstus.sics.se/sicstus/docs/latest4/html/sicstus.html/Writing-Efficient-Programs.html)
+
 [Prolog Coding GuideLines](https://arxiv.org/pdf/0911.2899)
+
 [Sicstus Prolog User Manual](https://sicstus.sics.se/sicstus/docs/latest4/pdf/sicstus.pdf)
