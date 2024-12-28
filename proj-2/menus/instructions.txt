@@ -1,0 +1,38 @@
+             ______                        __                                      __      __                               
+            |      \                      |  \                                    |  \    |  \                              
+             \$$$$$$ _______    _______  _| $$_     ______   __    __   _______  _| $$_    \$$  ______   _______    _______ 
+              | $$  |       \  /       \|   $$ \   /      \ |  \  |  \ /       \|   $$ \  |  \ /      \ |       \  /       \
+              | $$  | $$$$$$$\|  $$$$$$$ \$$$$$$  |  $$$$$$\| $$  | $$|  $$$$$$$ \$$$$$$  | $$|  $$$$$$\| $$$$$$$\|  $$$$$$$
+              | $$  | $$  | $$ \$$    \   | $$ __ | $$   \$$| $$  | $$| $$        | $$ __ | $$| $$  | $$| $$  | $$ \$$    \ 
+             _| $$_ | $$  | $$ _\$$$$$$\  | $$|  \| $$      | $$__/ $$| $$_____   | $$|  \| $$| $$__/ $$| $$  | $$ _\$$$$$$\
+            |   $$ \| $$  | $$|       $$   \$$  $$| $$       \$$    $$ \$$     \   \$$  $$| $$ \$$    $$| $$  | $$|       $$
+             \$$$$$$ \$$   \$$ \$$$$$$$     \$$$$  \$$        \$$$$$$   \$$$$$$$    \$$$$  \$$  \$$$$$$  \$$   \$$ \$$$$$$$ 
+
+
+
+                            The name "Blinq" stems from the combination of "Binary" and "Link", 
+                            capturing the essence of the game’s duality and its ultimate goal of connection.
+                            Blinq is a fascinating strategy game for two players, each tasked with connecting 
+                            their designated sides of the board.
+
+                            Objective:
+                                Players alternate turns placing dual-colored blocks on the board, working toward their goal:  
+                                    White: Connect the left and right sides of the board.
+                                    Black: Connect the top and bottom sides of the board.
+                                
+                            Gameplay:
+                                The game begins with the neutral block placed in the board's center.
+
+                                Starting with White, players alternate turns placing one of their
+                                blocks on the board.
+
+                                Blocks must be positioned within the grid or stacked atop a 2x2 platform on higher levels.
+                                        
+                                The path to victory lies in creating a continuous connection of one's color, visible from above.
+
+
+                            In Blinq, each decision carries dual consequences, blurring the lines between offense and defense. 
+                            The balance of building your path while disrupting your opponent’s is the heart of this captivating game of connection.                                        
+                                                                    
+                                                                    
+                                                                    (Press enter to go back)
