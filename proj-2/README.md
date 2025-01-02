@@ -48,7 +48,7 @@ play.
 
 5. The game ends when a player connects their two sides or resigns. If all pieces are used without a connection, the game ends in a draw.
 
-### References _REVIEW_
+### References
 
 For a more detailed overview of the rulebook and gameplay mechanics, visit the following resources:
 
@@ -67,27 +67,27 @@ For a more detailed overview of the rulebook and gameplay mechanics, visit the f
 
 ## Game Logic
 
-### Game Configuration Representation _REVIEW_
+### Game Configuration Representation
 
 The initial_state/2 predicate sets up the initial game configuration based on the mode and difficulty:
 
 - **GameConfig**: `[GameMode, GameDifficulty]`
-  
+
   - **GameMode**: Asserts one of these values **'player-player'**, a local game between two players, **'player-computer'**, a game between a player and a computer where the player starts first, **'computer-player'**, a game between a computer and a player where the computer starts first ,**'computer-computer'** , a game between two computers each with a given difficulty.
-  
+
   - **GameDifficulty**: Asserts one of these values, **1** as the _easy_ difficulty computer, and **2** as the _hard_ difficulty computer. This is for modes involving a single computer.
 
   - For **'computer-computer'**: GameDifficulty for each is `Bot1Difficulty` and `Bot2Difficulty` (**1** or **2** for each).
 
 - **GameState** Representation: `[Board, Player, 27, 27, ValidMoves]`
-   
-   - **Board**: Initial board matrix, with a special piece in the middle, and empty spaces around.
 
-   - **Player**: First player, always starting as `'white'`.
-  
-   - **Board Pieces**: For each player, there are `27` pieces that they play with.
-  
-   - **Valid Moves**: Initial matrix, with pairs of the coordinates with the initial valid moves.
+  - **Board**: Initial board matrix, with a special piece in the middle, and empty spaces around.
+
+  - **Player**: First player, always starting as `'white'`.
+
+  - **Board Pieces**: For each player, there are `27` pieces that they play with.
+
+  - **Valid Moves**: Initial matrix, with pairs of the coordinates with the initial valid moves.
 
 ### Internal Game State Representation
 
@@ -194,16 +194,16 @@ The initial_state/2 predicate sets up the initial game configuration based on th
 
 - **Usage:** The move/3 predicate applies a move and returns the new game state.
 
-### User Interaction  _REVIEW_
+### User Interaction
 
 The menu system works as the following description:
 
 - **Menu Display**:
-  
+
   - Menus are stored in external files (e.g., main_menu.txt, instructions.txt).
 
   - The `menu_path/2` predicate maps menu types to their respective file paths.
-  
+
   - The `display_menu/1` reads and prints the menu content to the console, clearing previous output for clarity.
 
 - **File Handling**:
@@ -211,34 +211,34 @@ The menu system works as the following description:
   - `read_from_file/1` and `print_file/1` manage reading and displaying menu content from external files.
 
 - **Menu Navigation**:
-  
+
   - Each menu has a dedicated predicate (e.g., `main/0`, shows the main menu, `human_bot/0`, shows the computer vs player menu) to handle user interaction.
-  
+
   - The `change_menu/2` predicate transitions between menus based on user input.
-  
+
 - **Input Validation**:
-  
+
   - User input is read and validated using predicates like `read_digit_between/3` (ensures input falls within a valid range) and `read_specific_char/1` (checks for proper input format).
-  
+
   - Invalid inputs trigger error messages and repeat the prompt until valid input is provided.
 
 - **Game Start and Options**:
-  
+
   - The user selects game modes, difficulties, and board sizes via menus.
-  
+
   - `start/3` initializes the game based on the selected mode and board size.
-  
+
   - After a game ends, `prompt_restart_or_menu/2` offers options to replay or return to the main menu.
 
 - **Exit**:
-  
+
   - The `exit/0` predicate clears the console and terminates the program.
 
 - **Game Menu System:** Text-based menu with options for starting a new game, viewing rules, and exiting.
 
 ## Conclusions
 
-### Summary _REVIEW_
+### Summary
 
 The development of our **Blinq** effectively demonstrated **Prolog's** capabilities for game logic implementation. While designing the game's architecture was less intuitive compared to other traditional programming languages, **Prolog's** declarative approach facilitated robust rule enforcement and logical flow.
 
@@ -256,7 +256,7 @@ The game features a modular menu system with file-based displays and supports va
 - Extend gameplay to include more complex rules and mechanics.
 - Variable board size.
 
-## Bibliography 
+## Bibliography
 
 [Efficient Programs HTML](https://sicstus.sics.se/sicstus/docs/latest4/html/sicstus.html/Writing-Efficient-Programs.html)
 
