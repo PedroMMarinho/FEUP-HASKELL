@@ -17,7 +17,7 @@ Players alternate turns placing those blocks according to some simple stacking r
 
 1. Ensure that **SICStus Prolog 4.9** is installed.
 2. Clone the repository or download the project files.
-3. If there is a problem when loading assets, make sure to add the absolute path to `current_directory(_, 'your_path_here')` in `play/0`.
+3. If there is any problem when loading assets, make sure to add the absolute path to `current_directory(_, 'your_path_here')` in `play/0`.
 4. Open a terminal in the project directory.
 5. Run the following command to load the game files:
 
